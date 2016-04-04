@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.11.2">
+<file name="C:\Users\vgoryachev\workspace\event-rules-library\src\main\java\ru\at_consulting\itsm\event_rules\EnrichRule.java">
+</file>
+<file name="C:\Users\vgoryachev\workspace\event-rules-library\src\main\java\ru\at_consulting\itsm\event_rules\EventRules.java">
+</file>
+<file name="C:\Users\vgoryachev\workspace\event-rules-library\src\main\java\ru\at_consulting\itsm\event_rules\RuleInput.java">
+</file>
+<file name="C:\Users\vgoryachev\workspace\event-rules-library\src\main\java\ru\at_consulting\itsm\event_rules\RuleOutput.java">
+</file>
+<file name="C:\Users\vgoryachev\workspace\event-rules-library\src\main\java\ru\at_consulting\itsm\event_rules\Statement.java">
+</file>
+</checkstyle>
