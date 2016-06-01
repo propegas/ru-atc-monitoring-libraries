@@ -59,93 +59,98 @@ public class CiItems {
         Pattern ciWithTypePattern = Pattern.compile(itemCiTypePattern);
 
         Matcher matcher = itemWithCiPattern.matcher(itemname);
-        String ciid;
-        String newitemname = "";
-        String ciname;
-        String devicetype = "";
-        String parentitem;
-        String parentid = "";
+        String ciId;
+        String newItemName = "";
+        String ciName;
+        String deviceType = "";
+        String parentItemName;
+        String parentCiId = "";
         //String hostnameend = "";
 
         // if Item has CI pattern
         // [CI 2 (TYPE)::CI 3 (TYPE)] trapper item status
+        logger.debug("*** Using CI pattern: " + itemWithCiPattern);
         if (matcher.matches()) {
 
             logger.debug("*** Finded Zabbix Item with Pattern as CI: " + itemname);
 
             // save as CI name
-            newitemname = matcher.group(1).toUpperCase();
+            newItemName = matcher.group(1).toUpperCase();
 
-            ciname = newitemname;
+            ciName = newItemName;
 
-            logger.debug("*** newitemname: " + newitemname);
+            logger.debug("*** newitemname: " + newItemName);
 
             // CI 2 (TYPE)::CI 3 (TYPE)
-            Matcher matcher2 = ciWithParentPattern.matcher(newitemname);
+            Matcher matcher2 = ciWithParentPattern.matcher(newItemName);
             if (matcher2.matches()) {
-                logger.debug("*** Finded Zabbix Item with Pattern with Parent: " + newitemname);
-                newitemname = matcher2.group(2).trim().toUpperCase();
+                logger.debug("*** Finded Zabbix Item with Pattern with Parent: " + newItemName);
+                newItemName = matcher2.group(2).trim().toUpperCase();
 
-                ciname = newitemname;
+                ciName = newItemName;
 
-                parentitem = matcher2.group(1).trim().toUpperCase();
-                logger.debug("*** newitemname: " + newitemname);
-                logger.debug("*** parentitem: " + parentitem);
+                parentItemName = matcher2.group(1).trim().toUpperCase();
+                logger.debug("*** newitemname: " + newItemName);
+                logger.debug("*** parentitem: " + parentItemName);
 
                 logger.debug(String.format("*** Trying to generate hash for ParentItem with Pattern: %s:%s",
-                        hostname, parentitem));
+                        hostname, parentItemName));
                 String hash = "";
                 try {
-                    hash = hashString(String.format("%s:%s", hostname, parentitem), "SHA-1");
+                    hash = hashString(String.format("%s:%s", hostname, parentItemName), "SHA-1");
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 logger.debug("*** Generated Hash: " + hash);
-                parentid = hash;
+                parentCiId = hash;
 
             }
 
             // CI 2 (TYPE)
-            Matcher matcher3 = ciWithTypePattern.matcher(newitemname);
-            if (matcher3.matches()) {
-                logger.debug("*** Finded Zabbix Item with Pattern with Type: " + newitemname);
-                newitemname = matcher3.group(1).trim().toUpperCase();
-                devicetype = matcher3.group(2).trim().toUpperCase();
-                logger.debug("*** newitemname: " + newitemname);
-                logger.debug("*** devicetype: " + devicetype);
+            try {
+                Matcher matcher3 = ciWithTypePattern.matcher(newItemName);
+                if (matcher3.matches()) {
+                    logger.debug("*** Finded Zabbix Item with Pattern with Type: " + newItemName);
+                    newItemName = matcher3.group(1).trim().toUpperCase();
+                    deviceType = matcher3.group(2).trim().toUpperCase();
+                    logger.debug("*** newitemname: " + newItemName);
+                    logger.debug("*** devicetype: " + deviceType);
+                }
+            } catch (Exception e) {
+                logger.error(String.format("Error while parsing CI type using regexp pattern: %s ", e));
             }
 
             // get SHA-1 hash for hostname-item block for saving as ciid
             // Example:
             // KRL-PHOBOSAU--PHOBOS:TEST CI ITEM
             logger.debug(String.format("*** Trying to generate hash for Item with Pattern: %s:%s",
-                    hostname, ciname));
+                    hostname, ciName));
             String hash = "";
             try {
-                hash = hashString(String.format("%s:%s", hostname, ciname), "SHA-1");
+                hash = hashString(String.format("%s:%s", hostname, ciName), "SHA-1");
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             logger.debug("*** Generated Hash: " + hash);
-            ciid = hash;
+            ciId = hash;
 
             //event.setParametr(itemname);
         }
         // if Item has no CI pattern
         else {
-            logger.debug("*** Use parent host as CI for item: " + itemname);
-            ciid = hostid;
-
+            logger.debug("*** No matches to CI pattern, use parent host as CI for item: " + itemname);
+            ciId = hostid;
+            newItemName = itemname;
         }
 
         // id, name, type, parentid
         String[] hostreturn = new String[]{"", "", "", ""};
-        hostreturn[0] = ciid;
-        hostreturn[1] = newitemname;
-        hostreturn[2] = devicetype;
-        hostreturn[3] = parentid;
+        hostreturn[0] = ciId;
+        hostreturn[1] = newItemName;
+        hostreturn[2] = deviceType;
+        hostreturn[3] = parentCiId;
         //hostreturn[1] = hostnameend;
 
         logger.debug("New Zabbix CI ID: " + hostreturn[0]);

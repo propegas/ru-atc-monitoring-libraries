@@ -24,6 +24,13 @@
         <processorPath useClasspath="true" />
         <module name="event-rules-library" />
       </profile>
+      <profile default="false" name="Annotation profile for zabbix-general-ciitem-library" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="zabbix-general-ciitem-library" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="event-rules-library" target="1.7" />
